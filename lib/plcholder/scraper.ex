@@ -16,10 +16,12 @@ defmodule Plcholder.Scraper do
       Plcholder.Verifier.start_link(op)
     end
 
-    ops
-    |> List.last()
-    |> Map.get("createdAt")
-    |> run()
+    unless length(ops) < 1000 do
+      ops
+      |> List.last()
+      |> Map.get("createdAt")
+      |> run()
+    end
   end
 
 end
