@@ -43,7 +43,7 @@ defmodule Plcholder.Verifier do
         cid: operation["cid"],
         operation: operation["operation"],
         did: operation["did"],
-        created_at: operation["created_at"],
+        created_at: DateTime.from_iso8601(operation["createdAt"]) |> elem(1) |> DateTime.truncate(:second),
         prev: operation["operation"]["prev"],
         sig: operation["operation"]["sig"],
         verified?: op_checks_out?

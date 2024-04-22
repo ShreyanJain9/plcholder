@@ -1,9 +1,18 @@
 defmodule Plcholder.Scraper do
 
   use Task
+  import Ecto.Query
 
   def start_link(_) do
-    Task.start_link(__MODULE__, :run, [0])
+    Task.start_link(__MODULE__, :run, [get_last_date() || "0"])
+  end
+
+  def get_last_date() do
+    Plcholder.Operation
+    |> order_by(desc: :created_at)
+    |> limit(1)
+    |> select([:created_at])
+    |> Plcholder.Repo.one()
   end
 
   def run(date_after) do
