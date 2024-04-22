@@ -27,3 +27,5 @@ plcholder-*.tar
 
 # Sqlite
 plcholder_repo.db
+plcholder_repo.db-shm
+plcholder_repo.db-wal
