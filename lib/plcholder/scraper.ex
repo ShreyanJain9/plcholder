@@ -13,11 +13,12 @@ defmodule Plcholder.Scraper do
     |> limit(1)
     |> select([:created_at])
     |> Plcholder.Repo.one()
+    |> Map.get(:created_at)
   end
 
   def run(date_after) do
     ops =
-      HTTPoison.get!("https://plc.directory/export?after=#{date_after}").body
+      HTTPoison.get!("https://plc.directory/export?after=#{DateTime.to_iso8601(date_after)}").body
       |> String.split("\n")
       |> Enum.map(&Jason.decode!/1)
 
@@ -29,6 +30,8 @@ defmodule Plcholder.Scraper do
       ops
       |> List.last()
       |> Map.get("createdAt")
+      |> DateTime.from_iso8601()
+      |> elem(1)
       |> run()
     end
   end

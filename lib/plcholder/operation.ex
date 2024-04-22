@@ -24,7 +24,8 @@ defmodule Plcholder.Operation do
   import Ecto.Query
 
   def get_op_rotkeys(cid) do
-    case get_by_cid(cid).operation do
+    op = get_by_cid(cid)
+    case op && op.operation do
       %{"type" => "plc_operation", "rotationKeys" => keys} -> keys
       %{"type" => "create", "recoveryKey" => key} -> [key]
       nil ->
