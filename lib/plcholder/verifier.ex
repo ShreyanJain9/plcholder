@@ -1,8 +1,7 @@
 defmodule Plcholder.Verifier do
-  use Task
 
-  def start_link(operation) do
-    Task.start_link(__MODULE__, :run, [operation])
+  def run_fn(operation) do
+    fn -> run(operation) end
   end
 
   def run(operation) do

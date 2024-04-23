@@ -31,6 +31,7 @@ defmodule Plcholder.MixProject do
       {:httpoison, "~> 2.2"},
       {:ecto, "~> 3.11"},
       {:ecto_sqlite3, "~> 0.15"},
+      {:postgrex, ">= 0.0.0"},
     ]
   end
 end

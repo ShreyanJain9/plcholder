@@ -10,7 +10,8 @@ defmodule Plcholder.Application do
       {Plcholder.Multicodec, "multicodec.csv"},
       Plcholder.Repo,
       Plcholder.Jobs,
-      Plcholder.Scraper
+      Plcholder.Scraper,
+      {Task.Supervisor, name: Plcholder.TaskSupervisor}
     ]
     opts = [strategy: :one_for_one, name: Plcholder.Supervisor]
     Supervisor.start_link(children, opts)

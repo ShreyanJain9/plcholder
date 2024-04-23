@@ -1,7 +1,10 @@
 import Config
 
 config :plcholder, Plcholder.Repo,
-  adapter: Ecto.Adapters.Sqlite3,
-  database: "plcholder_repo.db"
+  adapter: Ecto.Adapters.Postgres,
+  database: "plcholder",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost"
 
 config :plcholder, ecto_repos: [Plcholder.Repo]
