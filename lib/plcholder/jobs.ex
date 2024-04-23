@@ -44,23 +44,23 @@ defmodule Plcholder.Jobs do
     :ets.lookup(__MODULE__, cid)
     |> List.first()
     |> elem(2)
+    |> Enum.map(&get/1)
+    |> Enum.map(&elem(&1, 2))
   end
 
-  def wait_for(cid) do
-    self = self()
+  def wait_for(cid, my_cid) do
     unless ( job = get(cid) ) == nil do
-      :ets.insert(__MODULE__, {cid, elem(job, 1), [self | elem(job, 2)]})
+      :ets.insert(__MODULE__, {cid, elem(job, 1), [my_cid | elem(job, 2)]})
     else
       Process.sleep(10)
-      wait_for(cid)
+      wait_for(cid, my_cid)
     end
     receive do
       {:verified, ^cid, rot_keys} -> rot_keys
       {:verify_failed, ^cid, rot_keys} ->
         IO.puts("failed to verify #{cid}")
         rot_keys
-      _ -> IO.puts("unknown message received for #{cid} at #{self}"); wait_for(cid)
+      _ -> IO.puts("unknown message received for #{cid} at #{self()}"); wait_for(cid, my_cid)
     end
   end
-
 end

@@ -15,7 +15,7 @@ defmodule Plcholder.Verifier do
         # Op is a genesis
         Plcholder.Verify.verify_genesis(op, operation["did"])
       else
-        rotkeys = Plcholder.Operation.get_op_rotkeys(op["prev"])
+        rotkeys = Plcholder.Operation.get_op_rotkeys(op["prev"], operation["cid"])
         Plcholder.Verify.verify_op_signatures(op, rotkeys)
       end
 
@@ -31,7 +31,7 @@ defmodule Plcholder.Verifier do
     for waiter <- Plcholder.Jobs.waiters(cid) do
       send(
         waiter,
-        {verify_status, cid, Plcholder.Operation.get_op_rotkeys(op["cid"])}
+        {verify_status, cid, Plcholder.Operation.get_op_rotkeys(op["cid"], op["cid"])}
       )
     end
   end
