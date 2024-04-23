@@ -32,6 +32,7 @@ defmodule Plcholder.MixProject do
       {:ecto, "~> 3.11"},
       {:ecto_sqlite3, "~> 0.15"},
       {:postgrex, ">= 0.0.0"},
+      {:logger_file_backend, "~> 0.0.14"},
     ]
   end
 end

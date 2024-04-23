@@ -19,6 +19,7 @@ defmodule Plcholder.Operation do
     operation
     |> cast(attrs, [:cid, :operation, :did])
     |> validate_required([:cid, :operation, :did])
+    |> unique_constraint(:cid, name: :operations_cid_unique?)
   end
 
   import Ecto.Query
