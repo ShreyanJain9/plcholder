@@ -10,9 +10,11 @@ defmodule Plcholder.Application do
       {Plcholder.Multicodec, "multicodec.csv"},
       Plcholder.Repo,
       Plcholder.Jobs,
-      Plcholder.Scraper,
       {Task.Supervisor, name: Plcholder.TaskSupervisor}
-    ]
+    ] ++ case System.get_env("PLCHOLDER_SCRAPE_NOW") do
+      "true" -> [Plcholder.Scraper]
+      _ -> []
+    end
     opts = [strategy: :one_for_one, name: Plcholder.Supervisor]
     Supervisor.start_link(children, opts)
   end

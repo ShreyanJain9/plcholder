@@ -22,8 +22,6 @@ defmodule Plcholder.Operation do
     |> unique_constraint(:cid, name: :operations_cid_unique?)
   end
 
-  import Ecto.Query
-
   def get_op_rotkeys(cid, my_cid) do
     op = get_by_cid(cid)
     case op && op.operation do

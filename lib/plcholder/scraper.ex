@@ -1,5 +1,4 @@
 defmodule Plcholder.Scraper do
-
   use Task
   import Ecto.Query
 
@@ -25,9 +24,11 @@ defmodule Plcholder.Scraper do
       |> String.split("\n")
       |> Enum.map(&Jason.decode!/1)
 
-    for op <- ops do
-      Task.Supervisor.start_child(Plcholder.TaskSupervisor, Plcholder.Verifier.run_fn(op))
-    end
+    spawn(fn ->
+      for op <- ops do
+        Task.Supervisor.start_child(Plcholder.TaskSupervisor, Plcholder.Verifier.run_fn(op))
+      end
+    end)
 
     unless length(ops) < 1000 do
       ops
@@ -41,7 +42,14 @@ defmodule Plcholder.Scraper do
     end
   end
 
-  def handle_times_scraped(n) when n > 500, do: Process.sleep(300000); 0
-  def handle_times_scraped(n), do: n + 1
+  @rate_limit 500
+  @five_min 300_000
+  @wait_time @five_min
 
+  def handle_times_scraped(n) when n > @rate_limit do
+    Process.sleep(@wait_time)
+    0
+  end
+
+  def handle_times_scraped(n), do: n + 1
 end
