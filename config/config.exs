@@ -7,8 +7,8 @@ config :plcholder, Plcholder.Repo,
   password: "postgres",
   hostname: "localhost",
   migration_lock: nil,
-  pool_size: 20,
-  queue_target: 10000
+  pool_size: 15,
+  queue_target: 6000
 
 
 config :plcholder, ecto_repos: [Plcholder.Repo]

@@ -48,6 +48,7 @@ defmodule Plcholder.Scraper do
 
   def handle_times_scraped(n) when n > @rate_limit do
     Process.sleep(@wait_time)
+    Plcholder.Jobs.Cleaner.clean()
     0
   end
 

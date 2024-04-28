@@ -1,0 +1,3 @@
+#!/bin/sh
+
+MIX_ENV=prod PLCHOLDER_SCRAPE_NOW=true mix run --no-halt -e "Plcholder.Application.start(:normal, [])"

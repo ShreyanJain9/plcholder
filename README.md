@@ -1,21 +1,18 @@
 # Plcholder
 
-**TODO: Add description**
+## What's With That Stupid Name?
+
+ - It's a placeholder name, just like PLC is a placeholder service
+ - It scrapes n holds PLC operations
+ - The `er` at the end could mean it runs on erlang
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `plcholder` to your list of dependencies in `mix.exs`:
+ - Just git clone this repository (`git clone https://github.com/ShreyanJain9/plcholder`)
+ - Then make sure you have Elixir installed
+ - Then `mix deps.get`
+ - Then modify the config so it matches your DB
+ - Then `mix ecto.create`, `mix ecto.migrate`
+ - Then `./start` to start scraping or `./start_iex` to scrape with access to an IEx shell
 
-```elixir
-def deps do
-  [
-    {:plcholder, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/plcholder>.
-
+When it's done it'll print `Done!`

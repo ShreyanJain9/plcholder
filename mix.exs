@@ -15,7 +15,7 @@ defmodule Plcholder.MixProject do
   def application do
     [
       mod: {Plcholder.Application, []},
-      extra_applications: [:logger]
+      extra_applications: [:logger, :wx, :runtime_tools, :observer]
     ]
   end
 

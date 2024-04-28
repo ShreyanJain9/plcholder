@@ -1,0 +1,2 @@
+#!/bin/sh
+MIX_ENV=prod PLCHOLDER_SCRAPE_NOW=true iex -S mix
