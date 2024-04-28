@@ -24,7 +24,7 @@ defmodule Plcholder.Verify do
 
   @spec verify_signature(map(), String.t()) :: boolean()
   def verify_signature(%{"sig" => sig} = operation, pubkey_to_verify_with) do
-    {:ok, operation} =
+    {:ok, operation_cbor} =
       Map.delete(operation, "sig")
       |> DagCBOR.encode()
 
@@ -33,19 +33,19 @@ defmodule Plcholder.Verify do
       |> Base.url_decode64!(case: :lower, padding: false)
       |> K256.Signature.create(),
       decode_did_key(pubkey_to_verify_with),
-      operation
+      operation_cbor
     )
   end
 
   def verify_genesis(%{"prev" => nil} = genesis, did) do
     verify_json_to_did_hash(genesis, did) &&
-      verify_op_signatures(
+      verify_op_signature(
         genesis,
         get_genesis_pkeys(genesis)
       )
   end
 
-  def verify_op_signatures(op, pkeys) do
+  def verify_op_signature(op, pkeys) do
     pkeys
     |> Enum.any?(&verify_signature(op, &1))
   end
@@ -57,9 +57,10 @@ defmodule Plcholder.Verify do
     did_key
     |> Multibase.decode!()
     |> Multicodec.codec_decode()
-    |> elem(1)
-    |> elem(0)
-    |> K256.PublicKey.decompress()
+    |> case do
+      {:ok, {pubkey, "secp256k1-pub"}} -> K256.PublicKey.decompress(pubkey)
+      _ -> raise "Currently cannot handle p256 or other types of public keys, will add later"
+    end
   end
 
   def decode_did_key(did_key), do: did_key

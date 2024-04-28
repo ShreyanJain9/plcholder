@@ -26,7 +26,7 @@ defmodule Plcholder.Scraper do
 
     spawn(fn ->
       for op <- ops do
-        Task.Supervisor.start_child(Plcholder.TaskSupervisor, Plcholder.Verifier.run_fn(op))
+        Plcholder.Jobs.Supervisor.start_for_op(op)
       end
     end)
 

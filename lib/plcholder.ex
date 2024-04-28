@@ -10,7 +10,8 @@ defmodule Plcholder.Application do
       {Plcholder.Multicodec, "multicodec.csv"},
       Plcholder.Repo,
       Plcholder.Jobs,
-      {Task.Supervisor, name: Plcholder.TaskSupervisor}
+      Plcholder.Jobs.Supervisor,
+      Plcholder.Jobs.Registry
     ] ++ case System.get_env("PLCHOLDER_SCRAPE_NOW") do
       "true" -> [Plcholder.Scraper]
       _ -> []

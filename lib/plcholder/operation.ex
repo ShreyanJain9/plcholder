@@ -18,20 +18,17 @@ defmodule Plcholder.Operation do
   def changeset(operation, attrs) do
     operation
     |> cast(attrs, [:cid, :operation, :did])
-    |> validate_required([:cid, :operation, :did])
+    |> validate_required([:cid, :operation, :did, :sig, :created_at, :verified?])
     |> unique_constraint(:cid, name: :operations_cid_unique?)
   end
 
-  def get_op_rotkeys(cid, my_cid) do
+  def get_op_rotkeys(cid) do
     op = get_by_cid(cid)
     case op && op.operation do
       %{"type" => "plc_operation", "rotationKeys" => keys} -> keys
       %{"type" => "create", "recoveryKey" => key} -> [key]
       nil ->
-        case Plcholder.Jobs.wait_for(cid, my_cid) do
-          nil -> []
-          {_, ^cid, keys} -> keys
-        end
+        Plcholder.Jobs.wait_for(cid)
     end
   end
 
