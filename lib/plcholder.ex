@@ -9,7 +9,6 @@ defmodule Plcholder.Application do
     children = [
       {Plcholder.Multicodec, "multicodec.csv"},
       Plcholder.Repo,
-      Plcholder.Jobs,
       Plcholder.Jobs.Supervisor,
       Plcholder.Jobs.Registry
     ] ++ case System.get_env("PLCHOLDER_SCRAPE_NOW") do

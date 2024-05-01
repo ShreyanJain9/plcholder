@@ -7,11 +7,10 @@ defmodule Plcholder.Jobs.Supervisor do
 
   @impl true
   def init(_) do
-    DynamicSupervisor.init(strategy: :one_for_one)
+    DynamicSupervisor.init(strategy: :one_for_one, restart: :transient)
   end
 
   def start_for_op(op) do
     DynamicSupervisor.start_child(__MODULE__, {Plcholder.Verifier, op})
   end
-
 end

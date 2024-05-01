@@ -26,7 +26,7 @@ defmodule Plcholder.Scraper do
 
     spawn(fn ->
       for op <- ops do
-        Plcholder.Jobs.Supervisor.start_for_op(op)
+        Plcholder.Jobs.Did.handle_op(op)
       end
     end)
 
@@ -46,9 +46,9 @@ defmodule Plcholder.Scraper do
   @five_min 300_000
   @wait_time @five_min
 
-  def handle_times_scraped(n) when n > @rate_limit do
+  def handle_times_scraped(n) when n >= @rate_limit do
+    spawn(&Plcholder.Jobs.Did.quit_all/0)
     Process.sleep(@wait_time)
-    Plcholder.Jobs.Cleaner.clean()
     0
   end
 

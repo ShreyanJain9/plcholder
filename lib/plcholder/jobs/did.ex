@@ -23,7 +23,7 @@ defmodule Plcholder.Jobs.Did do
   end
 
   def handle_cast(
-        {:handle_op, %{"cid" => cid, "operation" => %{"prev" => prev} = operation}},
+        {:handle_op, %{"cid" => cid, "operation" => %{"prev" => prev} = operation} = op_meta},
         {did, ops_map}
       ) do
     verified? =
@@ -33,14 +33,27 @@ defmodule Plcholder.Jobs.Did do
 
         _ ->
           rkeys =
-            ops_map[prev]
+            ops_map[prev |> IO.inspect()].operation
             |> Plcholder.Verify.get_genesis_pkeys()
 
           Plcholder.Verify.verify_op_signature(operation, rkeys)
       end
-      {:ok, op} = save_to_db(operation, verified?)
+      {:ok, op} = save_to_db(op_meta, verified?)
 
     {:noreply, {did, Map.put(ops_map, cid, op)}}
+  end
+
+  def handle_cast(:quit, _) do
+    {:stop, :normal, nil}
+  end
+
+  def quit_all do
+    Plcholder.Jobs.get_all()
+    |> Enum.each(fn {_, pid, _, _} -> GenServer.cast(pid, :quit) end)
+
+    Plcholder.Jobs.Supervisor
+    |> Process.whereis
+    |> Process.exit(:kill)
   end
 
   def save_to_db(operation, op_checks_out?) do
@@ -58,7 +71,10 @@ defmodule Plcholder.Jobs.Did do
 
   def get(did) do
     case Plcholder.Jobs.Registry.get(did) do
-      nil -> DynamicSupervisor.start_child(Plcholder.Jobs.Supervisor, {Plcholder.Jobs.Did, did})
+      nil ->
+        {:ok, pid} = DynamicSupervisor.start_child(Plcholder.Jobs.Supervisor, {Plcholder.Jobs.Did, did})
+        pid
+
       pid -> pid
     end
   end
@@ -66,5 +82,4 @@ defmodule Plcholder.Jobs.Did do
   def handle_op(%{"did" => did} = operation) do
     get(did) |> GenServer.cast({:handle_op, operation})
   end
-
 end
