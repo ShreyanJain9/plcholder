@@ -2,6 +2,7 @@ defmodule Plcholder.Operation do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   schema "operations" do
     field :cid, :string
@@ -38,4 +39,12 @@ defmodule Plcholder.Operation do
       cid -> Plcholder.Repo.get_by(Plcholder.Operation, cid: cid)
     end
   end
+
+  def get_by_did(did) do
+    Plcholder.Operation
+    |> where(did: ^did)
+    |> order_by(asc: :created_at)
+    |> Plcholder.Repo.all()
+  end
+
 end
